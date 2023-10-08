@@ -1,10 +1,12 @@
-#ifndef DBINTG_CUDA_TOOLS_DATAAUG
-#define DBINTG_CUDA_TOOLS_DATAAUG
+#ifndef INTG_CUDA_TOOLS_DATAAUG
+#define INTG_CUDA_TOOLS_DATAAUG
 
 #include "mix-memory.cuh"
 #include "cuda-tools.cuh"
+#include "timer.cuh"
 #include <vector>
 #include <string>
+#include <omp.h>   // NEW ADD
 #include <opencv2/opencv.hpp>
 
 namespace IMGPRrocess{

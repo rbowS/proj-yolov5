@@ -2,7 +2,7 @@
 
 # Compiler and flags
 NVCC := nvcc
-CFLAGS := -std=c++11 -O3 -g -G -lnvinfer -lnvparsers -lnvonnxparser -lnvinfer_plugin -lcudart -lopencv_highgui  -lopencv_imgcodecs -lopencv_imgproc -lopencv_core -I/home/srb/opencv/include -I/home/srb/cu12/include -I/home/srb/trtLearning/yolo-dbintegrate/include -I/home/srb/TensorRT-8.6.1.6/include -L/home/srb/opencv/lib -L/home/srb/cu12/lib64 -L/home/srb/TensorRT-8.6.1.6/lib
+CFLAGS := -Xcompiler -fopenmp -std=c++11 -O3 -g -G -lnvinfer -lnvparsers -lnvonnxparser -lnvinfer_plugin -lcudart -lopencv_highgui  -lopencv_imgcodecs -lopencv_imgproc -lopencv_core -I/home/srb/opencv/include -I/home/srb/cu12/include -I/home/srb/trtLearning/yolo-integrate/include -I/home/srb/TensorRT-8.6.1.6/include -L/home/srb/opencv/lib -L/home/srb/cu12/lib64 -L/home/srb/TensorRT-8.6.1.6/lib
 
 # Directories
 SRC_DIR := ./src

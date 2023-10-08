@@ -1,5 +1,5 @@
-#ifndef DBINTG_CUSTOM_MYLNODE2_PLUGIN_H
-#define DBINTG_CUSTOM_MYLNODE2_PLUGIN_H
+#ifndef INTG_CUSTOM_MYLNODE2_PLUGIN_H
+#define INTG_CUSTOM_MYLNODE2_PLUGIN_H
 
 #include <NvInferPlugin.h>
 #include <string>

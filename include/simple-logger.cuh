@@ -1,5 +1,5 @@
-#ifndef DBINTG_SIMPLE_LOGGER_HPP
-#define DBINTG_SIMPLE_LOGGER_HPP
+#ifndef INTG_SIMPLE_LOGGER_HPP
+#define INTG_SIMPLE_LOGGER_HPP
 
 #include <stdio.h>
 

@@ -50,10 +50,11 @@ build/img-process.o : src/img-process.cu \
     /home/srb/cu12/include/surface_indirect_functions.h \
     /home/srb/cu12/include/crt/cudacc_ext.h \
     /home/srb/cu12/include/device_launch_parameters.h \
-    /home/srb/trtLearning/yolo-dbintegrate/include/simple-logger.cuh \
-    /home/srb/trtLearning/yolo-dbintegrate/include/img-process.cuh \
-    /home/srb/trtLearning/yolo-dbintegrate/include/mix-memory.cuh \
-    /home/srb/trtLearning/yolo-dbintegrate/include/cuda-tools.cuh \
+    /home/srb/trtLearning/yolo-integrate/include/simple-logger.cuh \
+    /home/srb/trtLearning/yolo-integrate/include/img-process.cuh \
+    /home/srb/trtLearning/yolo-integrate/include/mix-memory.cuh \
+    /home/srb/trtLearning/yolo-integrate/include/cuda-tools.cuh \
+    /home/srb/trtLearning/yolo-integrate/include/timer.cuh \
     /home/srb/opencv/include/opencv2/opencv.hpp \
     /home/srb/opencv/include/opencv2/opencv_modules.hpp \
     /home/srb/opencv/include/opencv2/core.hpp \

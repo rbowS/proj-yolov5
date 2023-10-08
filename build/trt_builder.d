@@ -50,7 +50,7 @@ build/trt_builder.o : src/trt_builder.cu \
     /home/srb/cu12/include/surface_indirect_functions.h \
     /home/srb/cu12/include/crt/cudacc_ext.h \
     /home/srb/cu12/include/device_launch_parameters.h \
-    /home/srb/trtLearning/yolo-dbintegrate/include/trt_builder.cuh \
+    /home/srb/trtLearning/yolo-integrate/include/trt_builder.cuh \
     /home/srb/cu12/include/cublas_v2.h \
     /home/srb/cu12/include/cublas_api.h \
     /home/srb/cu12/include/cuComplex.h \
@@ -72,5 +72,5 @@ build/trt_builder.o : src/trt_builder.cu \
     /home/srb/TensorRT-8.6.1.6/include/NvInferPlugin.h \
     /home/srb/TensorRT-8.6.1.6/include/NvInferPluginUtils.h \
     /home/srb/TensorRT-8.6.1.6/include/NvOnnxParser.h \
-    /home/srb/trtLearning/yolo-dbintegrate/include/cuda-tools.cuh \
-    /home/srb/trtLearning/yolo-dbintegrate/include/simple-logger.cuh
+    /home/srb/trtLearning/yolo-integrate/include/cuda-tools.cuh \
+    /home/srb/trtLearning/yolo-integrate/include/simple-logger.cuh

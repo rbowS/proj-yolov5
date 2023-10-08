@@ -18,9 +18,6 @@
 #include <algorithm>
 #include <opencv2/opencv.hpp>
 #include <dirent.h>
-#include <thread>
-#include <mutex>
-#include <condition_variable>
 
 #include "cuda-tools.cuh"
 #include "trt_builder.cuh"
@@ -169,24 +166,9 @@ bool build_model(const char *path)
     return true;
 }
 
-void copy_toGPU(float* input_data_device_start, vector<vector<cv::Mat>> &imgMats, float *d2is_start, 
-                vector<string> filePaths, const int buffer_id, const int batch_size)
-{
-    int real_batch_size   = filePaths.size();
-    int input_channel = 3;
-    int input_height  = 640;
-    int input_width   = 640;
-    int input_numel   = batch_size * input_channel * input_height * input_width;
-    IMGPRrocess::encode_kernel_invoker(filePaths, input_data_device_start+buffer_id*input_numel, 
-                                       imgMats[buffer_id], 
-                                       d2is_start+6*batch_size*buffer_id, real_batch_size, 
-                                       input_width, input_height);
 
-}
 
-void inference(float* input_data_device, vector<unsigned char> &engine_data,
-               vector<cv::Mat> &imgMats, float *d2is, 
-               const int input_batch){
+void inference(vector<unsigned char> &engine_data, std::vector<std::string> filePaths, const int batchNum){
 
     TRTLogger logger;
     auto runtime   = make_nvshared( nvinfer1::createInferRuntime(logger) );
@@ -201,12 +183,19 @@ void inference(float* input_data_device, vector<unsigned char> &engine_data,
         return;
     }
 
+    MixMemory input_data;
+    int input_batch   = filePaths.size();
     int input_channel = 3;
     int input_height  = 640;
     int input_width   = 640;
     int input_numel   = input_batch * input_channel * input_height * input_width;
-
+    float* input_data_device = input_data.gpu<float>(input_numel);
+    std::vector<cv::Mat> imgMats(input_batch); 
+    float *d2is = new float[6*input_batch];
     
+    IMGPRrocess::encode_kernel_invoker(filePaths, input_data_device, imgMats, d2is, input_batch, input_width, input_height);
+    
+
     auto execution_context = make_nvshared( engine->createExecutionContext() );
     cudaStream_t stream = nullptr;
     checkRuntime(cudaStreamCreate(&stream));
@@ -304,10 +293,11 @@ void inference(float* input_data_device, vector<unsigned char> &engine_data,
             cv::rectangle(imgMats[kk], cv::Point(left-3, top-33), cv::Point(left + text_width, top), color, -1);
             cv::putText(imgMats[kk], caption, cv::Point(left, top-5), 0, 1, cv::Scalar::all(0), 2, 16);
         }
-        string wt_path = "output/image-draw_"+to_string(input_batch)+"_"+to_string(kk)+".jpg";
+        string wt_path = "output/image-draw_"+to_string(batchNum)+"_"+to_string(kk)+".jpg";
         cv::imwrite(wt_path, imgMats[kk]);
     }
     
+    delete[] d2is;
 }
 
 
@@ -334,87 +324,10 @@ vector<string> get_imgFiles(string folderPath)
     return fileNames;
 }
 
-// 缓冲区的最大容量
-const int BUFFER_SIZE = 2;
-
-// 缓冲区的头部和尾部指针
-int head = 0;
-int tail = 0;
-
-// 互斥锁，用于保护对缓冲区的访问
-std::mutex mtx;
-
-// 条件变量，用于通知生产者和消费者
-std::condition_variable cvar;
-
-
-// 判断缓冲区是否为空的函数
-bool is_buffer_empty() {
-    return head == tail;
-}
-
-// 判断缓冲区是否为满的函数
-bool is_buffer_full() {
-    return (tail + 1) % BUFFER_SIZE == head;
-}
-
-
-// 生产者线程的函数
-void producer(float* buffer, vector<vector<cv::Mat>> &imgMats, float *d2is_start, 
-              vector<string> img_paths, vector<int> &buffer_batchSize, 
-              const int batchSize, const int counts) 
-{
-    int count = 0;
-    while (true) {
-        std::unique_lock<std::mutex> lock(mtx);
-        cvar.wait(lock, []{return !is_buffer_full();});
-        vector<string> filePaths;
-        cout<<"produce"<<endl;
-        for (int i = count; i < count + batchSize && i < img_paths.size(); ++i) {
-            filePaths.push_back(img_paths[i]);
-        }
-        int real_batchSize = filePaths.size();
-        buffer_batchSize[tail] = real_batchSize;
-        copy_toGPU(buffer, imgMats, d2is_start, filePaths, tail, batchSize);
-
-        tail = (tail + 1) % BUFFER_SIZE;
-        lock.unlock();
-        cvar.notify_one();
-        count += real_batchSize;
-        if (count >= counts) {
-            break;
-        }
-    }
-}
-
-// 消费者线程的函数
-void consumer(float* input_data_device_start, vector<unsigned char> &engine_data,
-              vector<vector<cv::Mat>> &imgMats, float *d2is_start, vector<int> &buffer_batchSize,
-              const int batch_d2i_size, const int batch_img_size, const int counts) {
-    int count = 0;
-    while (true) {
-        std::unique_lock<std::mutex> lock(mtx);
-        cvar.wait(lock, []{return !is_buffer_empty();});
-        cout<<"consum"<<endl;
-        const int input_batch = buffer_batchSize[head];
-        inference(input_data_device_start+head*batch_img_size, engine_data, imgMats[head], 
-                  d2is_start+head*batch_d2i_size, input_batch);
-        head = (head + 1) % BUFFER_SIZE;
-        lock.unlock();
-        cvar.notify_one();
-        count += input_batch;
-        if (count >= counts) {
-            break;
-        }
-    }
-}
-
-
-
 
 int main(){
-    const char *path = "/home/srb/trtLearning/yolo-dbintegrate/workspace/replaced.onnx";
-    const char *engine_path = "/home/srb/trtLearning/yolo-dbintegrate/workspace/engine.trtmodel";
+    const char *path = "/home/srb/trtLearning/yolo-integrate/workspace/replaced.onnx";
+    const char *engine_path = "/home/srb/trtLearning/yolo-integrate/workspace/engine.trtmodel";
     string dir_Path = "/home/srb/trtLearning/images/VOC2005_1/PNGImages/TUGraz_cars";
     vector<string> img_paths = get_imgFiles(dir_Path);
     if (!access(engine_path, F_OK) == 0)
@@ -424,41 +337,31 @@ int main(){
         }
     }
     
-    vector<unsigned char> engine_data = load_file(engine_path);
 
     int batchSize = 256; 
-    int input_channel = 3;
-    int input_height  = 640;
-    int input_width   = 640;
-    int input_numel   = batchSize * input_channel * input_height * input_width;
-    const int batch_d2i_size = batchSize*6;
-    vector<int> buffer_batchSize(BUFFER_SIZE);
-
-    // 共享的数组作为缓冲区
-    float* input_data_device_start;
-    float *d2is_start = new float[BUFFER_SIZE*batchSize*6];
-    checkRuntime( cudaMalloc((void**)&input_data_device_start, BUFFER_SIZE*input_numel*sizeof(float)) );
-
-    
+    cout<<"yolo-integrate batchSize: "<<batchSize<<endl;
+    int currentIndex = 0;
+    auto engine_data = load_file(engine_path);
     GpuTimer timer;
     float time_cost;
     timer.Start();
 
-    vector<vector<cv::Mat>> imgMats(BUFFER_SIZE, vector<cv::Mat>(batchSize));
-    const int counts = img_paths.size();
-    std::thread t1(producer, input_data_device_start, std::ref(imgMats), d2is_start, 
-                   img_paths, std::ref(buffer_batchSize),  batchSize, counts);
-    std::thread t2(consumer, input_data_device_start, std::ref(engine_data),
-                   std::ref(imgMats), d2is_start, std::ref(buffer_batchSize), batch_d2i_size, 
-                   input_numel, counts);
-    t1.join();
-    t2.join();
+    int batchNum = 1;
+    while (currentIndex < img_paths.size()) {
+        // 获取当前批次的数据
+        std::vector<string> batchDataPaths;
+        for (int i = currentIndex; i < currentIndex + batchSize && i < img_paths.size(); ++i) {
+            batchDataPaths.push_back(img_paths[i]);
+        }
 
+        // 处理当前批次的数据
+        inference(engine_data, batchDataPaths, batchNum);
+        std::cout <<"batch: "<<batchNum<<" OK"<< std::endl;
+        batchNum++;
+        currentIndex += batchSize;
+    }
     timer.Stop();
     time_cost = timer.Elapsed();
     printf("yolo-integrate: %f msecs.\n", time_cost);
-
-    cudaFree(input_data_device_start);
-    delete[] d2is_start;
     return 0;
 }

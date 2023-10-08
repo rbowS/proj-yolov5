@@ -50,4 +50,4 @@ build/simple-logger.o : src/simple-logger.cu \
     /home/srb/cu12/include/surface_indirect_functions.h \
     /home/srb/cu12/include/crt/cudacc_ext.h \
     /home/srb/cu12/include/device_launch_parameters.h \
-    /home/srb/trtLearning/yolo-dbintegrate/include/simple-logger.cuh
+    /home/srb/trtLearning/yolo-integrate/include/simple-logger.cuh

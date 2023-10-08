@@ -1,5 +1,5 @@
-#ifndef DBINTG_TRT_BUILDER_HPP
-#define DBINTG_TRT_BUILDER_HPP
+#ifndef INTG_TRT_BUILDER_HPP
+#define INTG_TRT_BUILDER_HPP
 
 #include <string>
 #include <vector>

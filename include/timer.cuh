@@ -1,5 +1,5 @@
-#ifndef DBINTE_GPU_TIMER_H__
-#define DBINTE_GPU_TIMER_H__
+#ifndef INTE_GPU_TIMER_H__
+#define INTE_GPU_TIMER_H__
 
 #include <cuda_runtime.h>
 

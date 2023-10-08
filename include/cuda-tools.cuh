@@ -1,5 +1,5 @@
-#ifndef DBINTG_CUDA_TOOLS_HPP
-#define DBINTG_CUDA_TOOLS_HPP
+#ifndef INTG_CUDA_TOOLS_HPP
+#define INTG_CUDA_TOOLS_HPP
 
 #include <cuda_runtime.h>
 #include <string>

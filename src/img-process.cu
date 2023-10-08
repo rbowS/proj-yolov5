@@ -145,8 +145,11 @@ namespace IMGPRrocess{
         // letter box
         const int blockSize = 256;
         const int gridSize = (input_height*input_width + blockSize -1)/blockSize;
+
+        #pragma omp parallel for
         for (int i = 0; i < input_batch; i++)
         {
+            
             imgMats[i] = cv::imread(filePaths[i]);
             int src_width = imgMats[i].cols;
             int src_height = imgMats[i].rows;
@@ -176,6 +179,7 @@ namespace IMGPRrocess{
             cudaFree(d_d2i);
             cudaFree(d_src_data);
         }
+
         
         for (int i = 0; i < input_batch; i++) {
             cudaStreamDestroy(streams[i]);

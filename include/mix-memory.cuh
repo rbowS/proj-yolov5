@@ -1,5 +1,5 @@
-#ifndef DBINTG_MEMORY_HPP
-#define DBINTG_MEMORY_HPP
+#ifndef INTG_MEMORY_HPP
+#define INTG_MEMORY_HPP
 
 #include <stddef.h>
 #include "simple-logger.cuh"

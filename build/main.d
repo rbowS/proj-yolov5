@@ -163,9 +163,9 @@ build/main.o : src/main.cu \
     /home/srb/opencv/include/opencv2/video.hpp \
     /home/srb/opencv/include/opencv2/video/tracking.hpp \
     /home/srb/opencv/include/opencv2/video/background_segm.hpp \
-    /home/srb/trtLearning/yolo-dbintegrate/include/cuda-tools.cuh \
-    /home/srb/trtLearning/yolo-dbintegrate/include/trt_builder.cuh \
-    /home/srb/trtLearning/yolo-dbintegrate/include/simple-logger.cuh \
-    /home/srb/trtLearning/yolo-dbintegrate/include/mix-memory.cuh \
-    /home/srb/trtLearning/yolo-dbintegrate/include/img-process.cuh \
-    /home/srb/trtLearning/yolo-dbintegrate/include/timer.cuh
+    /home/srb/trtLearning/yolo-integrate/include/cuda-tools.cuh \
+    /home/srb/trtLearning/yolo-integrate/include/trt_builder.cuh \
+    /home/srb/trtLearning/yolo-integrate/include/simple-logger.cuh \
+    /home/srb/trtLearning/yolo-integrate/include/mix-memory.cuh \
+    /home/srb/trtLearning/yolo-integrate/include/img-process.cuh \
+    /home/srb/trtLearning/yolo-integrate/include/timer.cuh

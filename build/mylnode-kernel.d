@@ -50,7 +50,7 @@ build/mylnode-kernel.o : src/mylnode-kernel.cu \
     /home/srb/cu12/include/surface_indirect_functions.h \
     /home/srb/cu12/include/crt/cudacc_ext.h \
     /home/srb/cu12/include/device_launch_parameters.h \
-    /home/srb/trtLearning/yolo-dbintegrate/include/MYLNODE1.cuh \
+    /home/srb/trtLearning/yolo-integrate/include/MYLNODE1.cuh \
     /home/srb/TensorRT-8.6.1.6/include/NvInferPlugin.h \
     /home/srb/TensorRT-8.6.1.6/include/NvInfer.h \
     /home/srb/TensorRT-8.6.1.6/include/NvInferLegacyDims.h \
@@ -61,5 +61,5 @@ build/mylnode-kernel.o : src/mylnode-kernel.cu \
     /home/srb/TensorRT-8.6.1.6/include/NvInferRuntime.h \
     /home/srb/TensorRT-8.6.1.6/include/NvInferImpl.h \
     /home/srb/TensorRT-8.6.1.6/include/NvInferPluginUtils.h \
-    /home/srb/trtLearning/yolo-dbintegrate/include/MYLNODE2.cuh \
-    /home/srb/trtLearning/yolo-dbintegrate/include/MYLNODE3.cuh
+    /home/srb/trtLearning/yolo-integrate/include/MYLNODE2.cuh \
+    /home/srb/trtLearning/yolo-integrate/include/MYLNODE3.cuh
